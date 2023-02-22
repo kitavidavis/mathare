@@ -1,24 +1,18 @@
-import logo from './logo.svg';
-import './App.css';
+import { MantineProvider, Text } from '@mantine/core';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Form from './Questionnare';
+import ExecutiveDashboard from './top-executives/Dashboard';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <MantineProvider theme={{colorScheme: 'dark', primaryColor: "cyan", primaryShade: 6}} withGlobalStyles withNormalizeCSS>
+      <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<ExecutiveDashboard />} />
+        <Route path='/form' element={<Form />} />
+      </Routes>
+      </BrowserRouter>
+    </MantineProvider>
   );
 }
 
