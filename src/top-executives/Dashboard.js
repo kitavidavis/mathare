@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import {AppShell,Header,Text,MediaQuery,Title as Title2,useMantineTheme, SimpleGrid, Grid, Paper, createStyles, Group, Switch, Select, RingProgress, Center, ScrollArea, Anchor, UnstyledButton} from '@mantine/core';
-import { MapContainer, TileLayer, GeoJSON, LayersControl, Polyline, LayerGroup } from 'react-leaflet'
+import { MapContainer, TileLayer, GeoJSON, LayersControl, Polyline, LayerGroup, Circle, CircleMarker } from 'react-leaflet'
 import L from "leaflet"
-import SewerNetworks from '../assets/SewerNetworks';
-import Valves from '../assets/Valves';
+import SewerNetworks from '../assets/Sewer-Networks';
+import Valves from '../assets/Sewer-Manholes';
 import { useViewportSize } from '@mantine/hooks';
 import { Chart as ChartJS, CategoryScale, LinearScale, PointElement, LineElement, Title, Tooltip, Legend, Filler, BarElement } from "chart.js";
 import { Line, Bar } from 'react-chartjs-2';
@@ -77,8 +77,8 @@ export default function ExecutiveDashboard() {
   const theme = useMantineTheme();
   const [opened, setOpened] = useState(false);
   const { height, width} = useViewportSize();
-  const [light, setLight] = useState(true);
-  const [basemap, setBasemap] = useState(true);
+  const [light, setLight] = useState(false);
+  const [basemap, setBasemap] = useState(false);
   const { classes } = useStyles();
   const [data, setData] = useState([]);
   const [refresh, setRefresh] = useState(false);
@@ -128,7 +128,7 @@ export default function ExecutiveDashboard() {
 
   const MapPanel = () => {
     return (
-        <MapContainer style={{height: height, width: '100%', backgroundColor: "black"}} center={[-1.265614385767745, 36.845314172878176]} zoom={18}>
+        <MapContainer style={{height: height - 70, width: '100%', backgroundColor: "black"}} center={[-1.265614385767745, 36.844714172878176]} zoom={18}>
         <LayersControl>
         {basemap ? (
         <>
@@ -146,11 +146,9 @@ export default function ExecutiveDashboard() {
                     color: f.properties.Condition === "Fair" ? theme.colors.cyan[6] : theme.colors.red[6],
                     fillColor: theme.colors.cyan[6]
                 }
-             }} data={SewerNetworks} onEachFeature={(f, l) => {
-                l.bindPopup(`<table><tr><td><strong>ID</strong</td><td>${f.properties.id}</td></tr></table>`)
-              }}/>
+             }} data={SewerNetworks} />
           </LayersControl.Overlay>
-          <LayersControl.Overlay name='Valves' checked>
+          <LayersControl.Overlay name='Manholes' checked>
           <GeoJSON data={Valves} pointToLayer={(f, latLng) => {
             return new L.CircleMarker(latLng, {
               opacity: 1,
@@ -160,10 +158,41 @@ export default function ExecutiveDashboard() {
               fillColor: theme.colors.cyan[6],
               radius: 7
             })
-          }} onEachFeature={(f, l) => {
-            l.bindPopup(`<table><tr><td><strong>ID</strong</td><td>${f.properties.id}</td></tr></table>`)
           }} />
           </LayersControl.Overlay>
+          <LayersControl.Overlay name="Vandalism Cases" checked>
+            <LayerGroup>
+            {vandalism.length > 0 ? (
+            vandalism.map((item, index) => {
+              return (
+                <CircleMarker key={`circle-${index}`} center={[item.coordinates.latitude, item.coordinates.longitude]} radius={10} pathOptions={{color: "red", fillColor: "red", fillOpacity: 1}} />
+              )
+            })
+          ) : null}
+            </LayerGroup>
+          </LayersControl.Overlay>
+          <LayersControl.Overlay name="Conduit Burst Cases" checked>
+            <LayerGroup>
+            {burst.length > 0 ? (
+            burst.map((item, index) => {
+              return (
+                <CircleMarker key={`circle-${index}`} center={[item.coordinates.latitude, item.coordinates.longitude]} radius={10} pathOptions={{color: "red", fillColor: "red", fillOpacity: 1}} />
+              )
+            })
+          ) : null}
+            </LayerGroup>
+            </LayersControl.Overlay>
+            <LayersControl.Overlay name="Manhole Blockage Cases" checked>
+            <LayerGroup>
+            {manhole.length > 0 ? (
+            manhole.map((item, index) => {
+              return (
+                <CircleMarker key={`circle-${index}`} center={[item.coordinates.latitude, item.coordinates.longitude]} radius={10} pathOptions={{color: "red", fillColor: "red", fillOpacity: 1}} />
+              )
+            })
+          ) : null}
+            </LayerGroup>
+            </LayersControl.Overlay>
         </LayersControl>
   </MapContainer>
     )
@@ -380,7 +409,7 @@ function VandalismChart(){
     >
         <Grid>
             <Grid.Col md={12} lg={3}>
-                <Paper p="md" style={{height: height}} withBorder>
+                <Paper p="md" style={{height: height - 70}} withBorder>
                 <ScrollArea mb={10} type='never' style={{height: (height - 70) * 0.3}}>
                     <Center mb={20}>
                     <Text>Vandalism Cases Distribution</Text>
@@ -404,12 +433,12 @@ function VandalismChart(){
                 </Paper>
             </Grid.Col>
             <Grid.Col md={12} lg={6}>
-                <Paper style={{height: height, width: '100%'}}>
+                <Paper style={{height: height - 70, width: '100%'}}>
                 <MapPanel />
                 </Paper>
             </Grid.Col>
             <Grid.Col md={12} lg={3}>
-            <Paper p="md" style={{height: height}} withBorder>
+            <Paper p="md" style={{height: height - 70}} withBorder>
             <Title2 order={3}>Introduction</Title2>
             <Text mb={10} lineClamp={10}>
               Sewer Asset Monitoring Dashboard for Mathare Constituency
