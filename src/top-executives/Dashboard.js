@@ -128,7 +128,7 @@ export default function ExecutiveDashboard() {
 
   const MapPanel = () => {
     return (
-        <MapContainer style={{height: height - 70, width: '100%', backgroundColor: "black"}} center={[-1.265614385767745, 36.844714172878176]} zoom={18}>
+        <MapContainer style={{height: height - 70, width: '100%', backgroundColor: "black"}} center={[-1.256365360250044, 36.875916535061734]} zoom={18}>
         <LayersControl>
         {basemap ? (
         <>
@@ -451,7 +451,7 @@ function VandalismChart(){
             </Group>
 
             <Paper mb={20} withBorder shadow="sm" p="xs">
-                <Center mb={10}>Valves/Nodes Analysis</Center>
+                <Center mb={10}>Manholes Analysis</Center>
                 <Group grow>
                     
               <div>
@@ -461,7 +461,7 @@ function VandalismChart(){
                   </Center>
                 } />
                 <Center ml={-10}>
-                  <Text size="sm">Functional Valves</Text>
+                  <Text size="sm">Functional Manholes</Text>
                 </Center>
               </div>
 
@@ -472,7 +472,7 @@ function VandalismChart(){
                   </Center>
                 } />
                 <Center ml={10}>
-                  <Text size="sm">Non-functional Valves</Text>
+                  <Text size="sm">Non-functional Manholes</Text>
                 </Center>
               </div>
                 </Group>
